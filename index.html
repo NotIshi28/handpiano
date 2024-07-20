@@ -1,114 +1,290 @@
 <html><head>
-<meta charset="utf-8">
-<title>HandPiano - Play Piano with Your Pointing Fingers</title>
-<style>
-body {
-    font-family: 'Roboto', sans-serif;
-    background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-    color: #fff;
-    margin: 0;
-    padding: 20px;
-    min-height: 100vh;
-}
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    background: rgba(255,255,255,0.1);
-    border-radius: 15px;
-    padding: 30px;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-}
-h1 {
-    text-align: center;
-    font-size: 2.5em;
-    margin-bottom: 30px;
-}
-#cameraContainer {
-    position: relative;
-    width: 100%;
-    height: 400px;
-    margin-bottom: 20px;
-    overflow: hidden;
-}
-#cameraFeed, #handCanvas, #pianoOverlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 10px;
-}
-#cameraFeed {
-    background: #000;
-}
-#handCanvas, #pianoOverlay {
-    pointer-events: none;
-}
-.controls {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-}
-button {
-    background: #fdbb2d;
-    border: none;
-    padding: 10px 20px;
-    color: #1a2a6c;
-    font-weight: bold;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin: 5px;
-}
-button:hover {
-    background: #1a2a6c;
-    color: #fdbb2d;
-}
-#pianoInfo {
-    background: rgba(0,0,0,0.5);
-    padding: 15px;
-    border-radius: 10px;
-    text-align: center;
-}
-.checkbox-container {
-    display: flex;
-    align-items: center;
-    margin: 5px;
-}
-.checkbox-container input {
-    margin-right: 5px;
-}
-</style>
-</head>
-<body>
-<div class="container">
-    <h1>HandPiano</h1>
-    <div id="cameraContainer">
-        <video id="cameraFeed" autoplay playsinline></video>
-        <canvas id="handCanvas"></canvas>
-        <canvas id="pianoOverlay"></canvas>
-    </div>
-    <div class="controls">
-        <button id="startCamera">Start Camera</button>
-        <button id="switchCamera">Switch Camera</button>
-        <div class="checkbox-container">
-            <input type="checkbox" id="reverseCamera">
-            <label for="reverseCamera">Reverse Camera</label>
+    <meta charset="utf-8">
+    <title>HandPiano - Play Piano with Your Pointing Fingers</title>
+    <style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+        color: #fff;
+        margin: 0;
+        padding: 20px;
+        min-height: 100vh;
+    }
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: rgba(255,255,255,0.1);
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    }
+    h1 {
+        text-align: center;
+        font-size: 2.5em;
+        margin-bottom: 30px;
+    }
+    #cameraContainer {
+        position: relative;
+        width: 100%;
+        height: 400px;
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+    #cameraFeed, #handCanvas, #pianoOverlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 10px;
+    }
+    #cameraFeed {
+        background: #000;
+    }
+    #handCanvas, #pianoOverlay {
+        pointer-events: none;
+    }
+    .controls {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+    button {
+        background: #fdbb2d;
+        border: none;
+        padding: 10px 20px;
+        color: #1a2a6c;
+        font-weight: bold;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin: 5px;
+    }
+    button:hover {
+        background: #1a2a6c;
+        color: #fdbb2d;
+    }
+    #pianoInfo {
+        background: rgba(0,0,0,0.5);
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+    }
+    .checkbox-container {
+        display: flex;
+        align-items: center;
+        margin: 5px;
+    }
+    .checkbox-container input {
+        margin-right: 5px;
+    }
+    </style>
+    </head>
+    <body>
+    <div class="container">
+        <h1>HandPiano</h1>
+        <div id="cameraContainer">
+            <video id="cameraFeed" autoplay playsinline></video>
+            <canvas id="handCanvas"></canvas>
+            <canvas id="pianoOverlay"></canvas>
         </div>
-        <div class="checkbox-container">
-            <input type="checkbox" id="reverseTracking">
-            <label for="reverseTracking">Reverse Tracking</label>
+        <div class="controls">
+            <button id="startCamera">Start Camera</button>
+            <button id="switchCamera">Switch Camera</button>
+            <div class="checkbox-container">
+                <input type="checkbox" id="reverseCamera">
+                <label for="reverseCamera">Reverse Camera</label>
+            </div>
+            <div class="checkbox-container">
+                <input type="checkbox" id="reverseTracking">
+                <label for="reverseTracking">Reverse Tracking</label>
+            </div>
+        </div>
+        <div id="pianoInfo">
+            <h3>Active Notes: <span id="activeNotes">None</span></h3>
+            <p>Point your fingers up to play different notes!</p>
         </div>
     </div>
-    <div id="pianoInfo">
-        <h3>Active Notes: <span id="activeNotes">None</span></h3>
-        <p>Point your fingers up to play different notes!</p>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424915/hands.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
-</body></html>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424915/hands.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    
+    <script>
+    let currentStream;
+    let facingMode = "user";
+    const videoElement = document.getElementById('cameraFeed');
+    const canvasElement = document.getElementById('handCanvas');
+    const pianoOverlay = document.getElementById('pianoOverlay');
+    const canvasCtx = canvasElement.getContext('2d');
+    const pianoCtx = pianoOverlay.getContext('2d');
+    let camera;
+    
+    const polySynth = new Tone.PolySynth(Tone.Synth).toDestination();
+    const notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F5', 'G5', 'A5', 'B5'];
+    let activeNotes = new Set();
+    
+    const hands = new Hands({locateFile: (file) => {
+        return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+    }});
+    
+    hands.setOptions({
+        maxNumHands: 2,
+        modelComplexity: 1,
+        minDetectionConfidence: 0.5,
+        minTrackingConfidence: 0.5
+    });
+    
+    hands.onResults(onResults);
+    
+    function drawPiano() {
+        const width = pianoOverlay.width;
+        const height = pianoOverlay.height;
+        const keyWidth = width / notes.length;
+    
+        pianoCtx.clearRect(0, 0, width, height);
+    
+        notes.forEach((note, index) => {
+            const x = index * keyWidth;
+            pianoCtx.fillStyle = activeNotes.has(note) ? '#fdbb2d' : 'rgba(255, 255, 255, 0.5)';
+            pianoCtx.fillRect(x, 0, keyWidth, height);
+            pianoCtx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+            pianoCtx.strokeRect(x, 0, keyWidth, height);
+            
+            pianoCtx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            pianoCtx.font = '12px Arial';
+            pianoCtx.fillText(note, x + 5, height - 5);
+        });
+    }
+    
+    function isFingerPointing(landmarks, tipIdx, baseIdx) {
+        const tipY = landmarks[tipIdx].y;
+        const baseY = landmarks[baseIdx].y;
+        return tipY < baseY;
+    }
+    
+    function onResults(results) {
+        canvasCtx.save();
+        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+        
+        const reverseCamera = document.getElementById('reverseCamera').checked;
+        const reverseTracking = document.getElementById('reverseTracking').checked;
+        
+        if (reverseCamera) {
+            canvasCtx.scale(-1, 1);
+            canvasCtx.translate(-canvasElement.width, 0);
+        }
+        
+        canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+    
+        let newActiveNotes = new Set();
+    
+        if (results.multiHandLandmarks) {
+            for (const landmarks of results.multiHandLandmarks) {
+                drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS,
+                               {color: '#00FF00', lineWidth: 5});
+                drawLandmarks(canvasCtx, landmarks, {color: '#FF0000', lineWidth: 2});
+                
+                // Play notes based on pointing finger positions
+                const fingerTips = [4, 8, 12, 16, 20]; // Indices of fingertips
+                const fingerBases = [2, 5, 9, 13, 17]; // Indices of finger bases
+                fingerTips.forEach((tipIdx, index) => {
+                    if (isFingerPointing(landmarks, tipIdx, fingerBases[index])) {
+                        let x = landmarks[tipIdx].x;
+                        if (reverseTracking) {
+                            x = 1 - x;
+                        }
+                        const noteIndex = Math.floor(x * notes.length);
+                        const note = notes[noteIndex];
+                        newActiveNotes.add(note);
+    
+                        // Draw blue circle for pointing fingers
+                        canvasCtx.beginPath();
+                        canvasCtx.arc(landmarks[tipIdx].x * canvasElement.width, landmarks[tipIdx].y * canvasElement.height, 10, 0, 2 * Math.PI);
+                        canvasCtx.fillStyle = 'blue';
+                        canvasCtx.fill();
+                    }
+                });
+            }
+        }
+    
+        // Update active notes
+        newActiveNotes.forEach(note => {
+            if (!activeNotes.has(note)) {
+                polySynth.triggerAttack(note);
+            }
+        });
+        activeNotes.forEach(note => {
+            if (!newActiveNotes.has(note)) {
+                polySynth.triggerRelease(note);
+            }
+        });
+        activeNotes = newActiveNotes;
+    
+        // Update UI
+        document.getElementById('activeNotes').textContent = 
+            activeNotes.size > 0 ? Array.from(activeNotes).join(', ') : 'None';
+    
+        drawPiano();
+    
+        canvasCtx.restore();
+    }
+    
+    function initializeCamera() {
+        camera = new Camera(videoElement, {
+            onFrame: async () => {
+                await hands.send({image: videoElement});
+            },
+            width: 640,
+            height: 480,
+            facingMode: facingMode
+        });
+    }
+    
+    async function startCamera() {
+        try {
+            if (camera) {
+                await camera.stop();
+            }
+            initializeCamera();
+            await camera.start();
+        } catch (err) {
+            console.error("Error starting the camera: ", err);
+            alert("Failed to start the camera. Please ensure you've granted the necessary permissions.");
+        }
+    }
+    
+    document.getElementById('startCamera').addEventListener('click', startCamera);
+    
+    document.getElementById('switchCamera').addEventListener('click', async () => {
+        facingMode = facingMode === "user" ? "environment" : "user";
+        await startCamera();
+    });
+    
+    document.getElementById('reverseCamera').addEventListener('change', function() {
+        videoElement.style.transform = this.checked ? 'scaleX(-1)' : 'scaleX(1)';
+    });
+    
+    function onResize() {
+        const width = videoElement.videoWidth;
+        const height = videoElement.videoHeight;
+        canvasElement.width = width;
+        canvasElement.height = height;
+        pianoOverlay.width = width;
+        pianoOverlay.height = height;
+        drawPiano();
+    }
+    
+    videoElement.addEventListener('loadedmetadata', onResize);
+    window.addEventListener('resize', onResize);
+    
+    initializeCamera();
+    
+    // Start audio context on user interaction
+    document.body.addEventListener('click', () => {
+        Tone.start();
+    });
+    </script>
+    </body></html>

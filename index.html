@@ -1,0 +1,114 @@
+<html><head>
+<meta charset="utf-8">
+<title>HandPiano - Play Piano with Your Pointing Fingers</title>
+<style>
+body {
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+    color: #fff;
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+}
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: rgba(255,255,255,0.1);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+h1 {
+    text-align: center;
+    font-size: 2.5em;
+    margin-bottom: 30px;
+}
+#cameraContainer {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+#cameraFeed, #handCanvas, #pianoOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+}
+#cameraFeed {
+    background: #000;
+}
+#handCanvas, #pianoOverlay {
+    pointer-events: none;
+}
+.controls {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+button {
+    background: #fdbb2d;
+    border: none;
+    padding: 10px 20px;
+    color: #1a2a6c;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 5px;
+}
+button:hover {
+    background: #1a2a6c;
+    color: #fdbb2d;
+}
+#pianoInfo {
+    background: rgba(0,0,0,0.5);
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+}
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    margin: 5px;
+}
+.checkbox-container input {
+    margin-right: 5px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>HandPiano</h1>
+    <div id="cameraContainer">
+        <video id="cameraFeed" autoplay playsinline></video>
+        <canvas id="handCanvas"></canvas>
+        <canvas id="pianoOverlay"></canvas>
+    </div>
+    <div class="controls">
+        <button id="startCamera">Start Camera</button>
+        <button id="switchCamera">Switch Camera</button>
+        <div class="checkbox-container">
+            <input type="checkbox" id="reverseCamera">
+            <label for="reverseCamera">Reverse Camera</label>
+        </div>
+        <div class="checkbox-container">
+            <input type="checkbox" id="reverseTracking">
+            <label for="reverseTracking">Reverse Tracking</label>
+        </div>
+    </div>
+    <div id="pianoInfo">
+        <h3>Active Notes: <span id="activeNotes">None</span></h3>
+        <p>Point your fingers up to play different notes!</p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424915/hands.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+</body></html>
